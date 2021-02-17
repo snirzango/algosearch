@@ -22,7 +22,7 @@ const initBlocksDB = () => {
 			console.log("blocks database exists, continuing...");
 		}
 	}).catch(error => {
-		console.log("Exception when initializing addresses DB: " + error);
+		console.log("Exception when initializing blocks DB: " + error);
 	})
 };
 

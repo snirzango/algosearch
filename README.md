@@ -2,7 +2,6 @@
 <img src="https://i.imgur.com/dsBUUav.png" width="300" alt="AlgoSearch logo image" />
 </p>
 
-[![Website algosearch.io](https://img.shields.io/website-up-down-green-red/https/algosearch.io.svg)](https://algosearch.io/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # AlgoSearch ([live deployment](https://algosearch.io))
@@ -10,8 +9,6 @@ AlgoSearch enables you to explore and search the [Algorand blockchain](https://w
 
 **Dependencies**
 * [Node.js](https://nodejs.org/en/) 8+ for use with server and front-end.
-* [Nginx](https://www.nginx.com/) for reverse proxy to Node server.
-* [Let's Encrypt](https://letsencrypt.org/) or your own SSL certificate solution. Traffic on AlgoSearch must pass through HTTPS.
 * [go-algorand](https://github.com/algorand/go-algorand) for Algorand `goal` node (must support archival indexing).
 * [CouchDB](https://couchdb.apache.org/) as database solution.
 
@@ -26,47 +23,15 @@ The [go-algorand](https://github.com/algorand/go-algorand) node currently aims t
 Simpler installation instructions, a hands-on guide, and a one-click deploy Docker image will be published upon final completion of AlgoSearch.
 
 ## Environment setup
-1. Install Nginx, certbot, CouchDB, go-algorand, and setup SSL with Let's Encrypt.
-2. You can use following sample Nginx configuration:
+First you'll need to install [CouchDB](https://docs.couchdb.org/en/stable/install/index.html) and [Algorand's Node](https://developer.algorand.org/docs/run-a-node/setup/install/) locally.
 
+You can run CouchDB using Docker easily:
 ```
-server {
-    server_name YOUR_WEBSITE_DOMAIN;
+mkdir db-data
 
-    root /var/www/html;
-    index index.html index.htm index.nginx-debian.html;
-    location / {
-        proxy_pass http://localhost:8000;
-        proxy_http_version 1.1;
-    }
-    location /v1 {
-        proxy_pass http://localhost:8080/v1;
-        proxy_http_version 1.1;
-    }
-
-    # Certbot configuration automatically here
-
-    # Security headers
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload";
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    add_header Referrer-Policy "origin";
-}
-
-server {
-    if ($host = YOUR_WEBSITE_DOMAIN) {
-        return 301 https://$host$request_uri;
-    }
-
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    server_name algosearch.io;
-    return 404;
-}
+docker run -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=password -p 5984:5984 --name my-couchdb -v $(pwd)/db-data:/opt/couchdb/data -d couchdb
 ```
-
-## AlgoSearch setup
+### AlgoSearch setup
 **install**
 ```
 # Run in folder root directory
@@ -75,13 +40,34 @@ npm install
 
 **configure**
 1. Enter your sitename in `src/constants.js`.
-2. Copy `service/global.sample.js` to `service/global.js` and enter your go-algorand node details.
+2. Copy `service/global.sample.js` to `service/global.js` and enter your node and DB details.
 
 **build**
 ```
 # Run in folder root directory
 npm run build
 ```
+
+### CouchDB Setup
+1. Make sure DB is running and that DB details are correct in `service/global.js`.
+2. Create tables:
+   ```
+   node service/sync/initSync.js
+   ```
+3. Create blocks DB view:
+   1. Go to: http://127.0.0.1:5984/_utils/#/database/blocks/new_view
+   2. Fill according to [service/design.md](service/design.md)
+4. Create transactions DB view:
+   1. Go to: http://127.0.0.1:5984/_utils/#/database/transactions/new_view
+   2. Fill according to [service/design.md](service/design.md)
+5. Sync tables:
+   ```
+   node service/sync/syncAll.js
+   ```
+   Note that this step takes some time.
+
+### Algorand's Node Setup
+Make sure node is running on the preferred network and that algod details are correct in `service/global.js`.
 
 # Documentation
 The [Wiki](https://github.com/Anish-Agnihotri/algosearch/wiki) is currently under construction.

@@ -90,6 +90,7 @@ async function getSyncedRound() {
 		round = body.rows[0].doc.round; // Get the round number from the latest block
 	}).catch(error => {
 		console.log('Exception when retrieving synced block number: ' + error);
+		round = 0;
 	})
 
 	return round; // Return round number
