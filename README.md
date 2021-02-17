@@ -64,7 +64,12 @@ npm run build
    ```
    node service/sync/syncAll.js
    ```
-   Note that this step takes some time.
+   Note that this step takes time to sync and should stay running as long as the server is running.
+
+### Run server
+```
+nodemon server.js
+```
 
 ### Algorand's Node Setup
 Make sure node is running on the preferred network and that algod details are correct in `service/global.js`.
