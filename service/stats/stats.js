@@ -67,7 +67,7 @@ module.exports = function(app) {
 					blocks.push({
 						"round": body.rows[i].doc.round,
 						"proposer": body.rows[i].doc.proposer,
-						"numtxn": Object.keys(body.rows[i].doc.txns).length,
+						"numtxn": Object.keys(body.rows[i].doc.transactions).length,
 						"timestamp": body.rows[i].doc.timestamp
 					});
 				}

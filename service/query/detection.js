@@ -8,7 +8,7 @@ module.exports = function(app) {
 
 		axios({
 			method: 'get',
-			url: `${constants.algodurl}/account/${string}`,
+			url: `${constants.algodurl}/accounts/${string}`,
 			headers: {'X-Algo-API-Token': constants.algodapi}
 		}).then(addrresp => {
 			if (addrresp.data.address === string) {
@@ -20,8 +20,8 @@ module.exports = function(app) {
 		}).catch(() => {
 			axios({
 				method: 'get',
-				url: `${constants.algodurl}/block/${string}`,
-				headers: {'X-Algo-API-Token': constants.algodapi}
+				url: `${constants.indexerurl}/blocks/${string}`,
+				headers: {'X-Algo-API-Token': constants.indexerapi}
 			}).then(blockresp => {
 				if (blockresp.data.round.toString() === string) {
 					res.send('block');
@@ -32,8 +32,8 @@ module.exports = function(app) {
 			}).catch(() => {
 				axios({
 					method: 'get',
-					url: `${constants.algodurl}/transaction/${string}`,
-					headers: {'X-Algo-API-Token': constants.algodapi}
+					url: `${constants.indexerurl}/transactions/${string}`,
+					headers: {'X-Algo-API-Token': constants.indexerapi}
 				}).then(transresp => {
 					if (transresp.data.tx === string) {
 						res.send('transaction');

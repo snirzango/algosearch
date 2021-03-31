@@ -43,12 +43,12 @@ class Block extends React.Component {
 
 	render() {
 		const columns = [
-			{Header: 'Round', accessor: 'round', Cell: props => <NavLink to={`/block/${props.value}`}>{props.value}</NavLink>}, 
-			{Header: 'TX ID', accessor: 'tx', Cell: props => <NavLink to={`/tx/${props.value}`}>{props.value}</NavLink>}, 
-			{Header: 'Type', accessor: 'type', Cell: props => <span className="type noselect">{props.value}</span>},
-			{Header: 'From', accessor: 'from', Cell: props => <NavLink to={`/address/${props.value}`}>{props.value}</NavLink>}, 
-			{Header: 'To', accessor: 'payment.to', Cell: props => <NavLink to={`/address/${props.value}`}>{props.value}</NavLink>},
-			{Header: 'Amount', accessor: 'payment.amount', Cell: props => <span>{formatValue(props.value/1000000)} <AlgoIcon /></span>},
+			{Header: 'Round', accessor: 'confirmed-round', Cell: props => <NavLink to={`/block/${props.value}`}>{props.value}</NavLink>},
+			{Header: 'TX ID', accessor: 'id', Cell: props => <NavLink to={`/tx/${props.value}`}>{props.value}</NavLink>},
+			{Header: 'Type', accessor: 'tx-type', Cell: props => <span className="type noselect">{props.value}</span>},
+			{Header: 'From', accessor: 'sender', Cell: props => <NavLink to={`/address/${props.value}`}>{props.value}</NavLink>},
+			{Header: 'To', accessor: 'payment-transaction.receiver', Cell: props => <NavLink to={`/address/${props.value}`}>{props.value}</NavLink>},
+			{Header: 'Amount', accessor: 'payment-transaction.amount', Cell: props => <span>{formatValue(props.value/1000000)} <AlgoIcon /></span>},
 			{Header: 'Fee', accessor: 'fee', Cell: props => <span>{formatValue(props.value/1000000)} <AlgoIcon /></span>}
 		];
 
@@ -119,7 +119,7 @@ class Block extends React.Component {
 					<span>Governance Overview</span>
 					<div>
 						<table cellSpacing="0">
-							<thead>	
+							<thead>
 								<tr>
 									<th>Identifier</th>
 									<th>Value</th>

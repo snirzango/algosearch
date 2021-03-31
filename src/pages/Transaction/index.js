@@ -60,23 +60,23 @@ class Transaction extends React.Component {
 							<tbody>
 								<tr>
 									<td>ID</td>
-									<td>{this.state.loading ? <Load /> : this.state.txid}</td>
+									<td>{this.state.loading ? <Load /> : this.state.id}</td>
 								</tr>
 								<tr>
 									<td>Round</td>
-									<td>{this.state.loading ? <Load /> : <NavLink to={`/block/${this.state.transaction.round}`}>{this.state.transaction.round}</NavLink>}</td>
+									<td>{this.state.loading ? <Load /> : <NavLink to={`/block/${this.state.transaction['confirmed-round']}`}>{this.state.transaction['confirmed-round']}</NavLink>}</td>
 								</tr>
 								<tr>
 									<td>Type</td>
-									<td>{this.state.loading ? <Load /> : <span className="type noselect">{this.state.transaction.type}</span>}</td>
+									<td>{this.state.loading ? <Load /> : <span className="type noselect">{this.state.transaction['tx-type']}</span>}</td>
 								</tr>
 								<tr>
 									<td>Sender</td>
-									<td>{this.state.loading ? <Load /> : <NavLink to={`/address/${this.state.transaction.from}`}>{this.state.transaction.from}</NavLink>}</td>
+									<td>{this.state.loading ? <Load /> : <NavLink to={`/address/${this.state.transaction.sender}`}>{this.state.transaction.sender}</NavLink>}</td>
 								</tr>
 								<tr>
 									<td>Receiver</td>
-									<td>{this.state.loading ? <Load /> : <NavLink to={`/address/${this.state.transaction.payment.to}`}>{this.state.transaction.payment.to}</NavLink>}</td>
+									<td>{this.state.loading ? <Load /> : <NavLink to={`/address/${this.state.transaction['payment-transaction'].receiver}`}>{this.state.transaction['payment-transaction'].receiver}</NavLink>}</td>
 								</tr>
 								<tr>
 									<td>Amount</td>

@@ -7,7 +7,7 @@
 
 	Sample all/blocks:
 	{ hash, previousBlockHash, seed, proposer, round, period, txnRoot, reward, rate, frac,
-	txns, timestamp, currentProtocol, nextProtocol, nextProtocolApprovals, nextProtocolSwitchOn, 
+	txns, timestamp, currentProtocol, nextProtocol, nextProtocolApprovals, nextProtocolSwitchOn,
 	upgradePropose, upgradeApprove }
 */
 
@@ -25,8 +25,8 @@ module.exports = function(app) {
 		// Query blocks database, skipping everything till round number, and limiting to 1 response
 		axios({
 			method: 'get',
-			url: `${constants.algodurl}/block/${round}`, // Request transaction details endpoint
-			headers: {'X-Algo-API-Token': constants.algodapi}
+			url: `${constants.indexerurl}/blocks/${round}`, // Request transaction details endpoint
+			headers: {'X-Algo-API-Token': constants.indexerurl}
 		}).then(response => {
 			res.send(response.data);
 		}).catch(error => {
@@ -59,17 +59,18 @@ module.exports = function(app) {
 		// Query blocks database, skipping all till lastBlock - limit, and limiting to limit
 		nano.db.use('blocks').view('latest', 'latest', {include_docs: true, descending: true, skip: lastBlock - limit, limit: limit}).then(body => {
 			let blocks = [];
-			
+
 			for (let i = body.rows.length - 1; i >= 0; i--) {
 				if (showFull) {
 					// If showFull = 1, send all data
 					blocks.push(body.rows[i]);
 				} else {
 					// If showFull = 0, send truncated data
+
 					blocks.push({
 						"round": body.rows[i].doc.round,
-						"transactions": Object.keys(body.rows[i].doc.txns).length,
-						"proposer": body.rows[i].doc.proposer,
+						"transactions": Object.keys(body.rows[i].doc.transactions).length,
+						// "proposer": body.rows[i].doc['genesis-id'],
 						"timestamp": body.rows[i].doc.timestamp,
 						"reward": parseInt(body.rows[i].doc.reward) / 1000000,
 					});

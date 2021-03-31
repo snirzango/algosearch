@@ -16,18 +16,16 @@ module.exports = function(app) {
 	// --> Return single transaction information
 	app.get('/transactionservice/:txid', function(req, res) {
 		const txid = req.params.txid; // Get txid from address
-
 		axios({
 			method: 'get',
-			url: `${constants.algodurl}/transaction/${txid}`, // Request transaction details endpoint
-			headers: {'X-Algo-API-Token': constants.algodapi}
+			url: `${constants.indexerurl}/transactions/${txid}`, // Request transaction details endpoint
+			headers: {'X-Algo-API-Token': constants.indexerapi}
 		}).then(response => {
 			let result = response.data; // Store response in result
-
 			axios({
 				method: 'get',
-				url: `${constants.algodurl}/block/${result.round}`,
-				headers: {'X-Algo-API-Token': constants.algodapi}
+				url: `${constants.indexerurl}/blocks/${result['current-round']}`,
+				headers: {'X-Algo-API-Token': constants.indexerurl}
 			}).then(resp => {
 				result.timestamp = resp.data.timestamp; // Add timestamp to result JSON
 				res.send(result);
@@ -43,11 +41,12 @@ module.exports = function(app) {
 
 	// --> Return all transaction data for a single address
 	app.get('/all/addresstx/:address', function(req, res) {
+		console.log('b')
 		var address = req.params.address; // Get address from request
 
 		axios({
 			method: 'get',
-			url: `${constants.algodurl}/account/${address}/transactions?max=100000000`, // Set arbitrary unlimited max (0 doesn't work)
+			url: `${constants.algodurl}/accounts/${address}/transactions?max=100000000`, // Set arbitrary unlimited max (0 doesn't work)
 			headers: {'X-Algo-API-Token': constants.algodapi}
 		}).then(response => {
 			res.send(response.data.transactions); // Return transaction data as response
@@ -85,12 +84,12 @@ module.exports = function(app) {
 					} else {
 						// If showFull = 0, return truncated data (for tables and low bandwidth usage)
 						transaction.push({
-							"round": body.rows[i].doc.round,
-							"type": body.rows[i].doc.type,
-							"tx": body.rows[i].doc.tx,
-							"from": body.rows[i].doc.from,
-							"to": body.rows[i].doc.payment.to,
-							"amount": parseInt(body.rows[i].doc.payment.amount)/1000000,
+							"round": body.rows[i].doc['confirmed-round'],
+							"type": body.rows[i].doc['tx-type'],
+							"tx": body.rows[i].doc.id,
+							"from": body.rows[i].doc.sender,
+							"to": body.rows[i].doc['payment-transaction'].receiver,
+							"amount": parseInt(body.rows[i].doc['payment-transaction'].amount)/1000000,
 							"fee": parseInt(body.rows[i].doc.fee)/1000000,
 						});
 					}
